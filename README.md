@@ -20,3 +20,7 @@ Demarrer en mode dev:
 
 Demarrer en prod?
 `fastapi run .\main.py`
+
+## A faire:
+
+Ajouter une clé secrète dans un .env pour que la porte puisse communiquer des logs +/- safe (header X-Secret-Key = ...)
