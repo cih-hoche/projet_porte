@@ -1,6 +1,6 @@
 # Bienvenue
 
-Sur ce github, vous trouverez le code source du serveur web qui gère l'acces au club info.
+Sur ce github, vous trouverez le code source du serveur web qui gère l'acces au club info.\
 Vous êtes libres d'y contribuer ou de chercher des bugs pour vous crocheter un accès. 🔑
 
 Quelques règles de contribution:
