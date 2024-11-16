@@ -44,7 +44,7 @@ void wifiConnect(WifiParams *params) {
   WiFi.begin(ssid, password);
 
   int tryDelay = 500;
-  int numberOfTries = 20;
+  int numberOfTries = 10;
 
   while (true) {
     if (getWifiConnected()) {
