@@ -1,4 +1,5 @@
 __pycache__
 .env
 .idea
-espCode
+espCode/*
+!espCode/espCode.ino
