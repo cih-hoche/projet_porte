@@ -1,8 +1,8 @@
 #include <WiFi.h>
+#include <HTTPClient.h>
 
 const char *ssid = "ssid";
 const char *password = "password";
-const char *host = "example.com";
 
 char *users = "root_id;9924-11-15 20:26:00\nsecret123;2024-11-15 20:26:00\naaa6875;2024-11-18 20:43:00\n123;9924-11-15 20:26:00";
 
@@ -121,7 +121,7 @@ void onWifiConnected(WifiParams *params) {
 
 void getUsers() {
   HTTPClient http;
-  http.begin("http://" + host + "/api/users/get");  //, root_ca); // Specify the URL and certificate
+  http.begin("http://example.com/api/users/get");  //, root_ca); // Specify the URL and certificate
   int httpCode = http.GET();                        //Make the request
   if (httpCode > 0) {
     String payload = http.getString();
@@ -152,9 +152,9 @@ bool isAuthorized(char *username) {
       if (date != NULL) {
         date++;  // Move past the ';' character
         if (isDateBeforeNow(date)) {
-          return true;
-        } else {
           return false;
+        } else {
+          return true;
         }
       }
     }
@@ -183,10 +183,10 @@ void loop() {
       &wifiTaskHandle,    // Task handle
       0                   // Core where the task should run
     );
-    isAuthorized("root_id");
-    isAuthorized("secret123");
-    isAuthorized("aaa6875");
-    isAuthorized("123");
+    Serial.println(isAuthorized("root_id"));
+    Serial.println(isAuthorized("secret123"));
+    Serial.println(isAuthorized("aaa6875"));
+    Serial.println(isAuthorized("123"));
   }
 
   // Your main code here
