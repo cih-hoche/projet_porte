@@ -1,8 +1,16 @@
 #include <WiFi.h>
 #include <HTTPClient.h>
 
+#include "time.h"
+#include "esp_sntp.h"
+
 const char *ssid = "ssid";
 const char *password = "password";
+
+const char *ntpServer1 = "pool.ntp.org";
+const char *ntpServer2 = "time.nist.gov";
+const long gmtOffset_sec = 3600;
+const int daylightOffset_sec = 3600;
 
 char *users = "root_id;9924-11-15 20:26:00\nsecret123;2024-11-15 20:26:00\naaa6875;2024-11-18 20:43:00\n123;9924-11-15 20:26:00";
 
@@ -122,6 +130,7 @@ void onWifiConnected(WifiParams *params) {
 void getUsers() {
   HTTPClient http;
   http.begin("http://example.com/api/users/get");  //, root_ca); // Specify the URL and certificate
+  http.begin("http://example.com/api/users/get");  //, root_ca); // Specify the URL and certificate
   int httpCode = http.GET();                        //Make the request
   if (httpCode > 0) {
     String payload = http.getString();
@@ -140,6 +149,7 @@ bool isDateBeforeNow(const char *dateStr) {
   strptime(dateStr, "%Y-%m-%d %H:%M:%S", &tm);
   time_t date = mktime(&tm);
   time_t now = time(0);
+  Serial.println(now);
   return difftime(now, date) > 0;
 }
 
@@ -147,12 +157,16 @@ bool isAuthorized(char *username) {
   char *usersCopy = strdup(users);
   char *line = strtok(usersCopy, "\n");
   while (line != NULL) {
+    // Serial.println(line);
     if (strncmp(line, username, strlen(username)) == 0) {
       char *date = strchr(line, ';');
+      // Serial.println(date);
       if (date != NULL) {
         date++;  // Move past the ';' character
         if (isDateBeforeNow(date)) {
           return false;
+        } else {
+          return true;
         } else {
           return true;
         }
@@ -168,6 +182,7 @@ bool isAuthorized(char *username) {
 void loop() {
   unsigned long currentMillis = millis();
   if (currentMillis - previousMillis >= interval) {
+    configTime(gmtOffset_sec, daylightOffset_sec, ntpServer1, ntpServer2);
     previousMillis = currentMillis;
 
     // Set parameters
@@ -183,13 +198,13 @@ void loop() {
       &wifiTaskHandle,    // Task handle
       0                   // Core where the task should run
     );
-    Serial.println(isAuthorized("root_id"));
+    // Serial.println(isAuthorized("root_id"));
     Serial.println(isAuthorized("secret123"));
     Serial.println(isAuthorized("aaa6875"));
     Serial.println(isAuthorized("123"));
   }
 
   // Your main code here
-  Serial.println("Loop");
+  // Serial.println("Loop");
   delay(500);
 }
