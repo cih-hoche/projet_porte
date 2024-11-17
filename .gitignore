@@ -3,3 +3,4 @@ __pycache__
 .idea
 espCode/*
 !espCode/espCode.ino
+node_modules
